@@ -16,7 +16,8 @@ const std::vector<std::string> split(const std::string& text)
 const SonarData SonarDataParser::parse(const std::string& line) const
 {
     auto splitted = split(line);
-    auto microsec = static_cast<unsigned int>(std::stof(splitted[0]) * 1000000);
+    auto microsec = static_cast<long unsigned int>(std::stod(splitted[0]) * 1000000);
+
     auto timestamp = std::chrono::microseconds(microsec);
 
     std::array<DetectionPoint, SONAR_N_SAMPLES> detectionPoints;

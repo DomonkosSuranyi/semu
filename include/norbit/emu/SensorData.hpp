@@ -14,6 +14,12 @@ namespace norbit
         int sampleIndex;
     };
 
+    inline bool operator==(const DetectionPoint& one, const DetectionPoint& other)
+    {
+        return one.angle == other.angle
+            && one.sampleIndex == other.sampleIndex;
+    }
+
     struct SonarData
     {
         std::chrono::microseconds timestamp;
