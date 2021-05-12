@@ -19,4 +19,5 @@ add_custom_command(
      COMMAND test_runner
 )
 
-configure_file("resources/sonar_test_data.txt" "resources/sonar_test_data.txt" COPYONLY)
+file(GLOB TEST_RESOURCES resources/*)
+file(COPY ${TEST_RESOURCES} DESTINATION resources/)
