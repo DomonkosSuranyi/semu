@@ -13,7 +13,8 @@ const std::vector<std::string> split(const std::string& text)
     return result;
 }
 
-const SonarData SonarDataParser::parse(const std::string& line) const
+// Sonar
+const SonarData SensorDataParser<SonarData>::parse(const std::string& line) const
 {
     auto splitted = split(line);
     auto microsec = static_cast<long unsigned int>(std::stod(splitted[0]) * 1000000);

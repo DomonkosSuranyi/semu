@@ -7,7 +7,6 @@ using namespace norbit;
 
 const std::string getLineFromFile(const std::string& filename, const unsigned int lineIdx)
 {
-
     auto path = std::filesystem::current_path();
     path /= "resources";
     path /= filename;
@@ -20,16 +19,15 @@ const std::string getLineFromFile(const std::string& filename, const unsigned in
     for(unsigned int i = 0; i < lineIdx; ++i)
     {
         std::getline(in, line);
-        std::cout << line << std::endl;
     }
 
     std::getline(in,line);
     return line;
 }
 
-TEST(SonarDataParserTest, test_parse)
+TEST(SensorDataParserTest, parse_sonar_data)
 {
-    SonarDataParser parser;
+    SensorDataParser<SonarData> parser;
     auto sonarData = parser.parse(getLineFromFile("sonar_test_data.txt", 0));
     ASSERT_EQ(
         std::chrono::microseconds(1553886508657940),
