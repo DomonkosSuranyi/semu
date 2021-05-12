@@ -2,7 +2,7 @@
 #define NORBIT_SENSOR_DATA
 
 #include <chrono>
-#include <array>
+#include <vector>
 
 #define SONAR_N_SAMPLES 512
 
@@ -23,7 +23,19 @@ namespace norbit
     struct SonarData
     {
         std::chrono::microseconds timestamp;
-        std::array<DetectionPoint, SONAR_N_SAMPLES> detectionPoints;
+        std::vector<DetectionPoint> detectionPoints;
+
+        SonarData(const std::chrono::microseconds& timestamp, const std::vector<DetectionPoint>& detectionPoints):
+            timestamp(timestamp),
+            detectionPoints(detectionPoints) {}
+
+        SonarData() = default;
+
+        SonarData(SonarData&& other) = default;
+
+        SonarData(const SonarData& other) = default;
+
+        SonarData& operator=(SonarData&& other) = default;
     };
 }
 #endif

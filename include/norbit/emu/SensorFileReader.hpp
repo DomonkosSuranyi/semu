@@ -13,11 +13,11 @@ namespace norbit
     {
     public:
         SensorFileReader(const std::filesystem::path& path, const SensorDataParser<T>& parser);
-        const std::optional<T> next();
+        std::optional<T> next();
 
     private:
         std::ifstream stream;
-        const SensorDataParser<T>& parser;
+        const SensorDataParser<T> parser;
     };
 
     template <typename T>
@@ -32,15 +32,15 @@ namespace norbit
     }
 
     template <typename T>
-    const std::optional<T> SensorFileReader<T>::next()
+    std::optional<T> SensorFileReader<T>::next()
     {
         std::string nextLine;
 
         if(std::getline(stream, nextLine))
-            return parser.parse(nextLine);
+            return std::optional<T>(std::in_place_t(), parser.parse(nextLine));
 
 
-        return {};
+        return std::nullopt;
     }
 }
 #endif
