@@ -18,7 +18,10 @@ namespace norbit
         std::optional<time_point> nextUpdateTime() override
         {
             if(MockSensor<T>::hasNext())
-                return MockSensor<T>::nextSensorData->timestamp + timeOffset;
+            {
+                return time_point(MockSensor<T>::nextSensorData->timestamp + timeOffset);
+            }
+
 
             return std::nullopt;
         }
