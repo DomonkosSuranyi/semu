@@ -7,28 +7,42 @@
 
 using namespace std::literals;
 
+#define MAX_WAIT_TIME 24h
+
 namespace norbit
 {
-    void emulate(std::vector<Updateable>& sensors)
+    void emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
     {
+        for(const auto& sensor : sensors)
+        {
+            if(!sensor->hasNext())
+                // TODO log
+                return;
+        }
+
         for(;;) {
-            auto nextUpdateTime = std::chrono::steady_clock::now() + 24h;
-            Updateable* nextUpdateSensor;
+            auto nextUpdateTime = time_point(MAX_WAIT_TIME);
+            std::unique_ptr<Updateable>* nextSensorToUpdate;
             for(auto& sensor : sensors)
             {
-                auto sensorNextUpdate = sensor.nextUpdateTime();
+                auto sensorNextUpdate = sensor->nextUpdateTime();
                 if(sensorNextUpdate < nextUpdateTime)
                 {
-                    nextUpdateTime = sensorNextUpdate;
-                    nextUpdateSensor = &sensor;
+                    nextUpdateTime = sensorNextUpdate.value();
+                    nextSensorToUpdate = &sensor;
                 }
             }
 
-            // wait until necessary
-            std::this_thread::sleep_until(nextUpdateTime);
+            if(nextSensorToUpdate)
+                // All time exceeds the MAX_WAIT_TIME
+                return;
 
-            nextUpdateSensor->update();
-            if(!nextUpdateSensor->hasNext())
+            // WAIT
+            if(nextUpdateTime > std::chrono::steady_clock::now())
+                std::this_thread::sleep_until(nextUpdateTime);
+
+            nextSensorToUpdate->get()->update();
+            if(!nextSensorToUpdate->get()->hasNext())
                 return;
         }
     }

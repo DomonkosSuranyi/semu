@@ -22,13 +22,11 @@ namespace norbit
                 return time_point(MockSensor<T>::nextSensorData->timestamp + timeOffset);
             }
 
-
             return std::nullopt;
         }
 
     private:
         const std::chrono::microseconds timeOffset;
-
     };
 }
 
