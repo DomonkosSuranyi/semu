@@ -12,3 +12,4 @@ add_definitions(-std=c++17
 add_subdirectory(src)
 add_subdirectory(test)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
