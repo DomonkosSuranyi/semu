@@ -3,7 +3,6 @@
 
 #include <optional>
 #include "SensorFileReader.hpp"
-#include "Updateable.hpp"
 #include <norbit/Sensor.hpp>
 
 namespace norbit
@@ -15,7 +14,7 @@ namespace norbit
      * T - the sensor output data type
      */
     template <typename T>
-    class MockSensor: public Sensor<T>, Updateable
+    class MockSensor: public Sensor<T>
     {
     public:
         MockSensor(const std::filesystem::path& sensorDataPath):
@@ -34,7 +33,7 @@ namespace norbit
         /**
          * Updates the actualSensorData.
          */
-        void update() override
+        void update()
         {
             if(hasNext())
             {
@@ -43,9 +42,14 @@ namespace norbit
             }
         }
 
-        bool hasNext() const override
+        bool hasNext() const
         {
             return nextSensorData.has_value();
+        }
+
+        const std::optional<T>& getNextData() const
+        {
+            return nextSensorData;
         }
 
     protected:
@@ -55,10 +59,7 @@ namespace norbit
          */
         std::optional<T> nextSensorData;
 
-    private:
         T actualSensorData;
-
-        SensorFileReader<T> filereader;
 
         /**
          *  Load next sensor data.
@@ -67,6 +68,10 @@ namespace norbit
         {
             nextSensorData = filereader.next();
         }
+    private:
+
+        SensorFileReader<T> filereader;
+
     };
 }
 

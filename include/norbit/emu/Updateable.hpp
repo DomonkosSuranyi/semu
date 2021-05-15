@@ -12,7 +12,14 @@ namespace norbit
     {
 
     public:
-        virtual ~Updateable() = default;
+        virtual ~Updateable() = 0;
+
+        /**
+         * Returns the time_point of the next update.
+         * Or returns std::nullopt if finished.
+         */
+        virtual std::optional<time_point> getNextUpdateTime() const = 0;
+
         /**
          * Updates the output data
          */
@@ -22,11 +29,7 @@ namespace norbit
          * Tells if the output data can be updated
          * with a next available data
          */
-        virtual bool hasNext() const = 0;
-
-        /**
-         */
-        virtual std::optional<time_point> nextUpdateTime() = 0;
+        virtual bool isFinished() const = 0;
     };
 }
 #endif
