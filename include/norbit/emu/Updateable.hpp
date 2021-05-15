@@ -12,6 +12,7 @@ namespace norbit
     {
 
     public:
+        virtual ~Updateable() = default;
         /**
          * Updates the output data
          */

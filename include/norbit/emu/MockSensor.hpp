@@ -24,6 +24,8 @@ namespace norbit
             prepare();
         }
 
+        virtual ~MockSensor() = default;
+
         T read() const override
         {
             return actualSensorData;

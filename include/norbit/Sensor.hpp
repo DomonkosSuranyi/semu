@@ -8,6 +8,8 @@ namespace norbit
     class Sensor
     {
     public:
+        virtual ~Sensor() = default;
+
         virtual T read() const = 0;
     };
 }
