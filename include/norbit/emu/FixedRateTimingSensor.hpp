@@ -9,8 +9,10 @@ namespace norbit
     class FixedRateTimingSensor : public TimingSensor<T>
     {
     public:
-        FixedRateTimingSensor(MockSensor<T>&& sensor, const std::chrono::microseconds& updateDelta):
-            TimingSensor<T>(std::forward(sensor)),
+        FixedRateTimingSensor(
+                const std::filesystem::path& sensorFilePath,
+                const std::chrono::microseconds& updateDelta):
+            TimingSensor<T>(sensorFilePath),
             updateDelta(updateDelta)
         {}
 

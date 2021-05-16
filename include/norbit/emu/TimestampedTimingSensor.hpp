@@ -11,9 +11,9 @@ namespace norbit
     {
     public:
         TimestampedTimingSensor(
-                MockSensor<T>&& sensor,
+                const std::filesystem::path& sensorFilePath,
                 const std::chrono::microseconds& firstOffset):
-            TimingSensor<T>(std::forward(sensor)),
+            TimingSensor<T>(sensorFilePath),
             initialOffset(firstOffset)
         {}
 
@@ -25,7 +25,10 @@ namespace norbit
     protected:
         time_point calcNextUpdateTime() const
         {
-            return MockSensor<T>::getNextData().timestamp - MockSensor<T>::read().timestamp;
+            auto delta = TimingSensor<T>::sensor.getNextData()->timestamp -
+                TimingSensor<T>::sensor.read().timestamp;
+
+            return TimingSensor<T>::lastUpdateTime.value() + delta;
         }
 
     private:

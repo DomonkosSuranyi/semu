@@ -1,9 +1,12 @@
 #include <norbit/emu/Emulator.hpp>
 #include <norbit/emu/Updateable.hpp>
+#include <norbit/emu/SensorData.hpp>
+#include <norbit/emu/TimestampedTimingSensor.hpp>
 
 #include <filesystem>
 
 using namespace norbit;
+using namespace std::literals;
 
 int main()
 {
@@ -11,7 +14,13 @@ int main()
 
     auto sonarPath = std::filesystem::path(sonarPathEnv);
 
-    norbit::emulate(std::vector<std::unique_ptr<Updateable>>());
+    auto sonarSensor = new TimestampedTimingSensor<SonarData>(sonarPath, 1010ms);
+
+    std::vector<std::unique_ptr<Updateable>> sensorVec;
+    sensorVec.push_back(std::unique_ptr<Updateable>(sonarSensor));
+
+
+    norbit::emulate(std::move(sensorVec));
 
     return 0;
 }

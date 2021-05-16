@@ -12,7 +12,7 @@ namespace norbit
     {
 
     public:
-        virtual ~Updateable() = 0;
+        virtual ~Updateable() = default;
 
         /**
          * Returns the time_point of the next update.
