@@ -1,5 +1,5 @@
-#include <norbit/emu/SensorFileReader.hpp>
-#include <norbit/emu/SensorDataParser.hpp>
+#include <norbit/mocksensor/SensorFileReader.hpp>
+#include <norbit/sonardetect/sensor_data_parsers.hpp>
 #include <gtest/gtest.h>
 
 using namespace norbit;

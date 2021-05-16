@@ -2,6 +2,9 @@
 #define NORBIT_SD_SENSOR_DATA_PARSERS
 
 #include <norbit/mocksensor/SensorDataParser.hpp>
+#include "sensor_data.hpp"
+#include <string>
+
 namespace norbit
 {
     template<>

@@ -1,6 +1,6 @@
 #include <norbit/emulator/emulator.hpp>
 #include <norbit/emulator/Updateable.hpp>
-#include <norbit/SensorData.hpp>
+#include <norbit/sonardetect/sensor_data_parsers.hpp>
 #include <norbit/TimestampedTimingSensor.hpp>
 
 #include <filesystem>

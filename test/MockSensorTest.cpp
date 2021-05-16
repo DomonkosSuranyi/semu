@@ -1,4 +1,5 @@
-#include <norbit/emu/MockSensor.hpp>
+#include <norbit/mocksensor/MockSensor.hpp>
+#include <norbit/sonardetect/sensor_data_parsers.hpp>
 #include <gtest/gtest.h>
 
 using namespace norbit;
