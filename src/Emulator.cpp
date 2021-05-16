@@ -7,6 +7,10 @@ using time_point = std::chrono::time_point<std::chrono::steady_clock, std::chron
 
 void norbit::emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
 {
+    if(sensors.empty())
+        // TODO log
+        return;
+
     auto now = std::chrono::time_point_cast<std::chrono::microseconds>(
             std::chrono::steady_clock::now());
 
@@ -15,6 +19,7 @@ void norbit::emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
         if(sensor->isFinished())
             // TODO log
             return;
+        sensor->start(now);
     }
 
     for(;;) {

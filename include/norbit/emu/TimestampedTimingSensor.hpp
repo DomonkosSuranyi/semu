@@ -9,18 +9,27 @@ namespace norbit
     template <typename T>
     class TimestampedTimingSensor : public TimingSensor<T>
     {
+    public:
         TimestampedTimingSensor(
                 MockSensor<T>&& sensor,
-                const time_point& startTime,
                 const std::chrono::microseconds& firstOffset):
-            TimingSensor<T>(std::forward(sensor), startTime, startTime + firstOffset)
+            TimingSensor<T>(std::forward(sensor)),
+            initialOffset(firstOffset)
         {}
+
+    void start(const time_point& startTime)
+    {
+        TimingSensor<T>::start(startTime + initialOffset);
+    }
 
     protected:
         time_point calcNextUpdateTime() const
         {
             return MockSensor<T>::getNextData().timestamp - MockSensor<T>::read().timestamp;
         }
+
+    private:
+        const std::chrono::microseconds initialOffset;
     };
 
 }

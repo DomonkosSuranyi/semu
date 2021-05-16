@@ -10,26 +10,23 @@ namespace norbit
     class TimingSensor : public Updateable
     {
     public:
-        TimingSensor(MockSensor<T>&& sensor, const time_point& startTime, const time_point& firstUpdateTime):
+        TimingSensor(MockSensor<T>&& sensor):
             sensor(std::forward(sensor)),
-            lastUpdateTime(startTime)
-        {
-            nextUpdateTime = firstUpdateTime;
-        }
+            lastUpdateTime(std::nullopt),
+            nextUpdateTime(std::nullopt)
+        {}
 
         virtual ~TimingSensor() = default;
 
         std::optional<time_point> getNextUpdateTime() const override
         {
-            return isFinished() ? nextUpdateTime : std::nullopt;
+            return nextUpdateTime;
         }
 
         void update() override
         {
             sensor->update();
-
-            lastUpdateTime = nextUpdateTime;
-            nextUpdateTime = calcNextUpdateTime();
+            updateTimes(nextUpdateTime);
         }
 
         bool isFinished() const override
@@ -37,13 +34,30 @@ namespace norbit
             return !sensor.hasNext();
         }
 
+        void start(const time_point& startTime) override
+        {
+            updateTimes(startTime);
+        }
     protected:
         virtual time_point calcNextUpdateTime() const = 0;
 
     private:
         MockSensor<T> sensor;
-        time_point lastUpdateTime;
-        time_point nextUpdateTime;
+        std::optional<time_point> lastUpdateTime;
+        std::optional<time_point> nextUpdateTime;
+
+        void updateTimes(const time_point& lastUpdateTime)
+        {
+            if(isFinished())
+            {
+                nextUpdateTime = std::nullopt;
+            }
+            else
+            {
+                this->lastUpdateTime = std::make_optional(lastUpdateTime);
+                nextUpdateTime = std::make_optional(calcNextUpdateTime());
+            }
+        }
     };
 }
 #endif

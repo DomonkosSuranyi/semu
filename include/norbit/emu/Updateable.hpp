@@ -30,6 +30,8 @@ namespace norbit
          * with a next available data
          */
         virtual bool isFinished() const = 0;
+
+        virtual void start(const time_point& startTime) = 0;
     };
 }
 #endif
