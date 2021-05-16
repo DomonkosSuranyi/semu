@@ -1,4 +1,4 @@
-#include <norbit/mocksensor/SensorDataParser.hpp>
+#include <norbit/sonardetect/sensor_data_parsers.hpp>
 #include <vector>
 #include <sstream>
 
@@ -13,7 +13,7 @@ const std::vector<std::string> split(const std::string& text)
     return result;
 }
 
-// Sonar
+// SonarData
 const SonarData SensorDataParser<SonarData>::parse(const std::string& line) const
 {
     auto splitted = split(line);
