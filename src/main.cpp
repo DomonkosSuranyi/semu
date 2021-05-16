@@ -1,7 +1,7 @@
-#include <norbit/emu/Emulator.hpp>
-#include <norbit/emu/Updateable.hpp>
-#include <norbit/emu/SensorData.hpp>
-#include <norbit/emu/TimestampedTimingSensor.hpp>
+#include <norbit/emulator/emulator.hpp>
+#include <norbit/emulator/Updateable.hpp>
+#include <norbit/SensorData.hpp>
+#include <norbit/TimestampedTimingSensor.hpp>
 
 #include <filesystem>
 
@@ -18,7 +18,6 @@ int main()
 
     std::vector<std::unique_ptr<Updateable>> sensorVec;
     sensorVec.push_back(std::unique_ptr<Updateable>(sonarSensor));
-
 
     norbit::emulate(std::move(sensorVec));
 

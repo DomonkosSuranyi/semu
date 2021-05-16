@@ -1,8 +1,8 @@
 #ifndef NORBIT_TIMING_SENSOR
 #define NORBIT_TIMING_SENSOR
 
-#include "Updateable.hpp"
-#include "MockSensor.hpp"
+#include <norbit/emulator/Updateable.hpp>
+#include <norbit/mocksensor/MockSensor.hpp>
 
 namespace norbit
 {

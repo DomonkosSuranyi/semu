@@ -1,9 +1,7 @@
-#include <norbit/emu/Emulator.hpp>
-#include <norbit/emu/MockSensor.hpp>
+#include <norbit/emulator/emulator.hpp>
+#include <norbit/mocksensor/MockSensor.hpp>
 
 using namespace norbit;
-
-using time_point = std::chrono::time_point<std::chrono::steady_clock, std::chrono::microseconds>;
 
 void norbit::emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
 {
