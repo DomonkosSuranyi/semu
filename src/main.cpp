@@ -14,7 +14,7 @@ int main()
 
     auto sonarPath = std::filesystem::path(sonarPathEnv);
 
-    auto sonarSensor = new TimestampedTimingSensor<SonarData>(sonarPath, 1010ms);
+    auto sonarSensor = new TimestampedTimingSensor<SonarData>(sonarPath);
 
     std::vector<std::unique_ptr<Updateable>> sensorVec;
     sensorVec.push_back(std::unique_ptr<Updateable>(sonarSensor));

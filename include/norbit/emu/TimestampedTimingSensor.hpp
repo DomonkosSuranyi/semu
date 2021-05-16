@@ -10,17 +10,9 @@ namespace norbit
     class TimestampedTimingSensor : public TimingSensor<T>
     {
     public:
-        TimestampedTimingSensor(
-                const std::filesystem::path& sensorFilePath,
-                const std::chrono::microseconds& firstOffset):
-            TimingSensor<T>(sensorFilePath),
-            initialOffset(firstOffset)
+        TimestampedTimingSensor(const std::filesystem::path& sensorFilePath):
+            TimingSensor<T>(sensorFilePath)
         {}
-
-    void start(const time_point& startTime)
-    {
-        TimingSensor<T>::start(startTime + initialOffset);
-    }
 
     protected:
         time_point calcNextUpdateTime() const
@@ -30,9 +22,6 @@ namespace norbit
 
             return TimingSensor<T>::lastUpdateTime.value() + delta;
         }
-
-    private:
-        const std::chrono::microseconds initialOffset;
     };
 
 }
