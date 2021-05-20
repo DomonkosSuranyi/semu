@@ -40,6 +40,11 @@ private:
     bool startCalledFirst;
 };
 
+inline auto updateablesVec()
+{
+    return std::vector<std::unique_ptr<Updateable>>();
+}
+
 TEST(EmulatorTest, starts_sensors_before_update)
 {
     CallSequenceTestHelper seqHelper;
@@ -69,7 +74,7 @@ TEST(EmulatorTest, starts_sensors_before_update)
                 seqHelper.callUpdate();
             }));
 
-    auto updateables = std::vector<std::unique_ptr<Updateable>>();
+    auto updateables = updateablesVec();
     updateables.push_back(std::unique_ptr<Updateable>(mockUpdateable));
 
     auto result = norbit::emulate(std::move(updateables));
@@ -77,5 +82,19 @@ TEST(EmulatorTest, starts_sensors_before_update)
     seqHelper.expectStartCalledFirst();
 
     ASSERT_EQ(EmulationResult::FINISHED, result) << "Emulation finished properly";
+}
+
+TEST(EmulatorTest, return_error_when_empty)
+{
+    EXPECT_EQ(EmulationResult::COULD_NOT_START, emulate(updateablesVec())) << "Empty vector";
+
+    auto mockUpdateable = new MockUpdateable();
+
+    EXPECT_CALL(*mockUpdateable, isFinished())
+        .WillOnce(Return(true));
+
+    auto updateables = updateablesVec();
+    updateables.push_back(std::unique_ptr<Updateable>(mockUpdateable));
+    EXPECT_EQ(EmulationResult::COULD_NOT_START, emulate(std::move(updateables))) << "No next data in updateable";
 }
 

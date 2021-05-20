@@ -9,7 +9,7 @@ inline auto getNow()
             std::chrono::steady_clock::now());
 }
 
-norbit::EmulationResult norbit::emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
+EmulationResult norbit::emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
 {
     if(sensors.empty())
         return EmulationResult::COULD_NOT_START;
