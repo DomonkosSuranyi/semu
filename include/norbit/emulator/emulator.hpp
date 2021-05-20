@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <vector>
+#include <functional>
 #include "Updateable.hpp"
 
 namespace norbit
@@ -11,6 +12,10 @@ namespace norbit
     {
         FINISHED, COULD_NOT_START
     };
+
+    EmulationResult emulate(
+            std::vector<std::unique_ptr<Updateable>>&& sensors,
+            const std::function<time_point()> nowSupplier);
 
     EmulationResult emulate(std::vector<std::unique_ptr<Updateable>>&& sensors);
 }
