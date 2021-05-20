@@ -3,20 +3,23 @@
 
 using namespace norbit;
 
-void norbit::emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
+inline auto getNow()
+{
+    return std::chrono::time_point_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now());
+}
+
+norbit::EmulationResult norbit::emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
 {
     if(sensors.empty())
-        // TODO log
-        return;
+        return EmulationResult::COULD_NOT_START;
 
-    auto now = std::chrono::time_point_cast<std::chrono::microseconds>(
-            std::chrono::steady_clock::now());
+    auto now = getNow();
 
     for(auto& sensor : sensors)
     {
         if(sensor->isFinished())
-            // TODO log
-            return;
+            return EmulationResult::COULD_NOT_START;
         sensor->start(now);
     }
 
@@ -36,7 +39,9 @@ void norbit::emulate(std::vector<std::unique_ptr<Updateable>>&& sensors)
 
         earliestUpdateSensor->update();
         if(earliestUpdateSensor->isFinished())
-            return;
+            return EmulationResult::FINISHED;
+
+        now = getNow();
     }
 }
 

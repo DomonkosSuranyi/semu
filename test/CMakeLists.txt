@@ -10,7 +10,7 @@ FetchContent_MakeAvailable(googletest)
 file(GLOB TEST_SOURCE_FILES *.cpp)
 
 add_executable(test_runner ${TEST_SOURCE_FILES})
-target_link_libraries(test_runner norbitlib gtest_main)
+target_link_libraries(test_runner norbitlib gmock gtest_main)
 
 add_custom_command(
      TARGET test_runner
