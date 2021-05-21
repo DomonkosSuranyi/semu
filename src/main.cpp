@@ -10,34 +10,44 @@
 using namespace norbit;
 using namespace std::literals;
 
+std::optional<std::filesystem::path> getPathFromEnv(const char* envName)
+{
+    auto pathEnv = std::getenv(envName);
+    if(pathEnv == nullptr)
+    {
+        std::cerr << "Error: Missing path. Please define "
+            << envName
+            << " environment variable."
+            << std::endl;
+        return std::nullopt;
+    }
+
+    auto path = std::filesystem::path(pathEnv);
+
+    return std::optional(path);
+}
+
 int main()
 {
-    auto sonarPathEnv = std::getenv("SONAR_FILE_PATH");
-    if(sonarPathEnv == nullptr)
-    {
-        std::cerr << "Error: Missing path. Please define SONAR_FILE_PATH environment variable." << std::endl;
+    auto sonarPath = getPathFromEnv("SONAR_PATH");
+    if(!sonarPath.has_value())
         return 0;
-    }
+    auto sonarSensor = new TimestampedTimingSensor<SonarData>(*sonarPath);
 
-    auto sonarPath = std::filesystem::path(sonarPathEnv);
-
-    auto sonarSensor = new TimestampedTimingSensor<SonarData>(sonarPath);
-
-
-    auto speedOfSoundPathEnv = std::getenv("SPEED_OF_SOUND_FILE_PATH");
-    if(speedOfSoundPathEnv == nullptr)
-    {
-        std::cerr << "Error: Missing path. Please define SPEED_OF_SOUND_FILE_PATH environment variable." << std::endl;
+    auto speedOfSoundPath = getPathFromEnv("SPEED_OF_SOUND_PATH");
+    if(!speedOfSoundPath.has_value())
         return 0;
-    }
+    auto speedOfSoundSensor = new FixedRateTimingSensor<SpeedOfSound>(*speedOfSoundPath, 1s);
 
-    auto speedOfSoundPath = std::filesystem::path(speedOfSoundPathEnv);
-
-    auto speedOfSoundSensor = new FixedRateTimingSensor<SpeedOfSound>(speedOfSoundPath, 1s);
+    auto gnssPath = getPathFromEnv("GNSS_PATH");
+    if(!gnssPath.has_value())
+        return 0;
+    auto gnssSensor = new FixedRateTimingSensor<GNSSData>(*gnssPath, 20ms);
 
     std::vector<std::unique_ptr<Updateable>> sensorVec;
     sensorVec.push_back(std::unique_ptr<Updateable>(sonarSensor));
     sensorVec.push_back(std::unique_ptr<Updateable>(speedOfSoundSensor));
+    sensorVec.push_back(std::unique_ptr<Updateable>(gnssSensor));
 
     auto result = norbit::emulate(std::move(sensorVec));
 

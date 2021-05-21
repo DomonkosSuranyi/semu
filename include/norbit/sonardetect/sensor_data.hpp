@@ -42,5 +42,11 @@ namespace norbit
     };
 
     using SpeedOfSound = float;
+
+    struct GNSSData
+    {
+        double roll, pitch, heading;
+        double latitude, longitude, altitude;
+    };
 }
 #endif

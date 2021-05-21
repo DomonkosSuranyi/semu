@@ -20,5 +20,12 @@ namespace norbit
     public:
         SpeedOfSound parse(const std::string& line) const;
     };
+
+    template<>
+    class SensorDataParser<GNSSData>
+    {
+    public:
+        GNSSData parse(const std::string& line) const;
+    };
 }
 #endif

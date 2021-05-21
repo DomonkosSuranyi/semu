@@ -36,8 +36,25 @@ SonarData SensorDataParser<SonarData>::parse(const std::string& line) const
     return SonarData(timestamp, measurePoints);
 }
 
+// SpeedOfSound
 SpeedOfSound SensorDataParser<SpeedOfSound>::parse(const std::string& line) const
 {
     return std::stof(line);
 }
 
+// GNSSData
+GNSSData SensorDataParser<GNSSData>::parse(const std::string& line) const
+{
+    auto splitted = split(line);
+
+    GNSSData gnssData;
+    gnssData.roll = std::stod(splitted[0]);
+    gnssData.pitch = std::stod(splitted[1]);
+    gnssData.heading = std::stod(splitted[2]);
+
+    gnssData.latitude = std::stod(splitted[3]);
+    gnssData.longitude = std::stod(splitted[4]);
+    gnssData.altitude = std::stod(splitted[5]);
+
+    return gnssData;
+}
