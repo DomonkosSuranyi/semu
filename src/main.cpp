@@ -2,6 +2,7 @@
 #include <norbit/emulator/Updateable.hpp>
 #include <norbit/sonardetect/sensor_data_parsers.hpp>
 #include <norbit/TimestampedTimingSensor.hpp>
+#include <norbit/FixedRateTimingSensor.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -22,8 +23,21 @@ int main()
 
     auto sonarSensor = new TimestampedTimingSensor<SonarData>(sonarPath);
 
+
+    auto speedOfSoundPathEnv = std::getenv("SPEED_OF_SOUND_FILE_PATH");
+    if(speedOfSoundPathEnv == nullptr)
+    {
+        std::cerr << "Error: Missing path. Please define SPEED_OF_SOUND_FILE_PATH environment variable." << std::endl;
+        return 0;
+    }
+
+    auto speedOfSoundPath = std::filesystem::path(speedOfSoundPathEnv);
+
+    auto speedOfSoundSensor = new FixedRateTimingSensor<SpeedOfSound>(speedOfSoundPath, 1s);
+
     std::vector<std::unique_ptr<Updateable>> sensorVec;
     sensorVec.push_back(std::unique_ptr<Updateable>(sonarSensor));
+    sensorVec.push_back(std::unique_ptr<Updateable>(speedOfSoundSensor));
 
     auto result = norbit::emulate(std::move(sensorVec));
 

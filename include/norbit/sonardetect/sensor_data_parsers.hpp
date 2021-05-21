@@ -11,7 +11,14 @@ namespace norbit
     class SensorDataParser<SonarData>
     {
     public:
-        const SonarData parse(const std::string& line) const;
+        SonarData parse(const std::string& line) const;
+    };
+
+    template<>
+    class SensorDataParser<SpeedOfSound>
+    {
+    public:
+        SpeedOfSound parse(const std::string& line) const;
     };
 }
 #endif

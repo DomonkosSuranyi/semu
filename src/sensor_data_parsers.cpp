@@ -14,7 +14,7 @@ const std::vector<std::string> split(const std::string& text)
 }
 
 // SonarData
-const SonarData SensorDataParser<SonarData>::parse(const std::string& line) const
+SonarData SensorDataParser<SonarData>::parse(const std::string& line) const
 {
     auto splitted = split(line);
     auto microsec = static_cast<long unsigned int>(std::stod(splitted[0]) * 1000000);
@@ -35,3 +35,9 @@ const SonarData SensorDataParser<SonarData>::parse(const std::string& line) cons
 
     return SonarData(timestamp, measurePoints);
 }
+
+SpeedOfSound SensorDataParser<SpeedOfSound>::parse(const std::string& line) const
+{
+    return std::stof(line);
+}
+

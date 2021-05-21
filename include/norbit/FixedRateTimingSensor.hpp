@@ -19,7 +19,7 @@ namespace norbit
     protected:
         time_point calcNextUpdateTime() const
         {
-            return TimingSensor<T>::lastUpdateTime + updateDelta;
+            return *TimingSensor<T>::lastUpdateTime + updateDelta;
         }
 
     private:

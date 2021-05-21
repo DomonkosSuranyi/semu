@@ -40,5 +40,7 @@ namespace norbit
 
         SonarData& operator=(SonarData&& other) = default;
     };
+
+    using SpeedOfSound = float;
 }
 #endif
