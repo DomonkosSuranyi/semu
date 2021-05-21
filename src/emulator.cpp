@@ -29,15 +29,14 @@ EmulationResult norbit::emulate(
             }
         }
 
+        now = nowSupplier();
         if(*earliestUpdateSensor->getNextUpdateTime() > now)
-            std::this_thread::sleep_until(
-                    *earliestUpdateSensor->getNextUpdateTime());
+            std::this_thread::sleep_for(*earliestUpdateSensor->getNextUpdateTime() - now);
+
 
         earliestUpdateSensor->update();
         if(earliestUpdateSensor->isFinished())
             return EmulationResult::FINISHED;
-
-        now = nowSupplier();
     }
 }
 
