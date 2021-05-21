@@ -32,17 +32,20 @@ int main()
     auto sonarPath = getPathFromEnv("SONAR_PATH");
     if(!sonarPath.has_value())
         return 0;
-    auto sonarSensor = new TimestampedTimingSensor<SonarData>(*sonarPath);
+    auto sonarCallback = [](const SonarData&){};
+    auto sonarSensor = new TimestampedTimingSensor<SonarData>(*sonarPath, sonarCallback);
 
     auto speedOfSoundPath = getPathFromEnv("SPEED_OF_SOUND_PATH");
     if(!speedOfSoundPath.has_value())
         return 0;
-    auto speedOfSoundSensor = new FixedRateTimingSensor<SpeedOfSound>(*speedOfSoundPath, 1s);
+    auto speedOfSoundCallback = [](const SpeedOfSound& sos){};
+    auto speedOfSoundSensor = new FixedRateTimingSensor<SpeedOfSound>(*speedOfSoundPath, 1s, speedOfSoundCallback);
 
     auto gnssPath = getPathFromEnv("GNSS_PATH");
     if(!gnssPath.has_value())
         return 0;
-    auto gnssSensor = new FixedRateTimingSensor<GNSSData>(*gnssPath, 20ms);
+    auto gnssCallback = [](const GNSSData&){};
+    auto gnssSensor = new FixedRateTimingSensor<GNSSData>(*gnssPath, 20ms, gnssCallback);
 
     std::vector<std::unique_ptr<Updateable>> sensorVec;
     sensorVec.push_back(std::unique_ptr<Updateable>(sonarSensor));

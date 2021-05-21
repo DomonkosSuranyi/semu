@@ -1,9 +1,9 @@
 #ifndef NORBIT_MOCKSENSOR
 #define NORBIT_MOCKSENSOR
 
+#include <functional>
 #include <optional>
 #include "SensorFileReader.hpp"
-#include <norbit/Sensor.hpp>
 
 namespace norbit
 {
@@ -14,18 +14,18 @@ namespace norbit
      * T - the sensor output data type
      */
     template <typename T>
-    class MockSensor: public Sensor<T>
+    class MockSensor
     {
     public:
+        using UpdateCallback = std::function<void(T)>;
+
         MockSensor(const std::filesystem::path& sensorDataPath):
             filereader(sensorDataPath, SensorDataParser<T>())
         {
             prepare();
         }
 
-        virtual ~MockSensor() = default;
-
-        T read() const override
+        T read() const
         {
             return actualSensorData;
         }
@@ -38,6 +38,10 @@ namespace norbit
             if(hasNext())
             {
                 actualSensorData = std::move(*nextSensorData);
+                for(const auto& listener : listeners)
+                {
+                    listener(actualSensorData);
+                }
                 prepare();
             }
         }
@@ -50,6 +54,11 @@ namespace norbit
         const std::optional<T>& getNextData() const
         {
             return nextSensorData;
+        }
+
+        void registerUpdateListener(UpdateCallback callback)
+        {
+            listeners.push_back(callback);
         }
 
     protected:
@@ -69,8 +78,8 @@ namespace norbit
             nextSensorData = filereader.next();
         }
     private:
-
         SensorFileReader<T> filereader;
+        std::vector<UpdateCallback> listeners;
 
     };
 }

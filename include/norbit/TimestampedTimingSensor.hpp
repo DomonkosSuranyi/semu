@@ -10,8 +10,8 @@ namespace norbit
     class TimestampedTimingSensor : public TimingSensor<T>
     {
     public:
-        TimestampedTimingSensor(const std::filesystem::path& sensorFilePath):
-            TimingSensor<T>(sensorFilePath)
+        TimestampedTimingSensor(const std::filesystem::path& sensorFilePath, typename MockSensor<T>::UpdateCallback updateCallback):
+            TimingSensor<T>(sensorFilePath, updateCallback)
         {}
 
     protected:

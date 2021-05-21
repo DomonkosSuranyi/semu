@@ -11,8 +11,9 @@ namespace norbit
     public:
         FixedRateTimingSensor(
                 const std::filesystem::path& sensorFilePath,
-                const std::chrono::microseconds& updateDelta):
-            TimingSensor<T>(sensorFilePath),
+                const std::chrono::microseconds& updateDelta,
+                typename MockSensor<T>::UpdateCallback updateCallback):
+            TimingSensor<T>(sensorFilePath, updateCallback),
             updateDelta(updateDelta)
         {}
 

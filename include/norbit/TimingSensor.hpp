@@ -10,11 +10,13 @@ namespace norbit
     class TimingSensor : public Updateable
     {
     public:
-        TimingSensor<T>(const std::filesystem::path& sensorFilePath):
+        TimingSensor<T>(const std::filesystem::path& sensorFilePath, typename MockSensor<T>::UpdateCallback updateCallback):
             sensor(MockSensor<T>(sensorFilePath)),
             lastUpdateTime(std::nullopt),
             nextUpdateTime(std::nullopt)
-        {}
+        {
+            sensor.registerUpdateListener(updateCallback);
+        }
 
         virtual ~TimingSensor() = default;
 
@@ -31,8 +33,7 @@ namespace norbit
             }
             else
             {
-                sensor.update();
-                updateTimes(*nextUpdateTime);
+                doUpdate(*nextUpdateTime);
             }
         }
 
@@ -43,9 +44,9 @@ namespace norbit
 
         void start(const time_point& startTime) override
         {
-            sensor.update();
-            updateTimes(startTime);
+            doUpdate(startTime);
         }
+
     protected:
         virtual time_point calcNextUpdateTime() const = 0;
         MockSensor<T> sensor;
@@ -59,6 +60,13 @@ namespace norbit
             this->lastUpdateTime = std::make_optional(lastUpdateTime);
 
             nextUpdateTime = std::make_optional(calcNextUpdateTime());
+        }
+
+        void doUpdate(const time_point& lastUpdateTime)
+        {
+            sensor.update();
+            updateTimes(lastUpdateTime);
+
         }
     };
 }
