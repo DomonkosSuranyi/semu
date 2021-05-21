@@ -6,15 +6,18 @@
 
 #define SONAR_N_SAMPLES 512
 
+// 1/78125
+#define SONAR_SAMPLING_PERIOD_SEC 0.0000128
+
 namespace norbit
 {
-    struct DetectionPoint
+    struct SonarMeasurePoint
     {
         float angle;
         int sampleIndex;
     };
 
-    inline bool operator==(const DetectionPoint& one, const DetectionPoint& other)
+    inline bool operator==(const SonarMeasurePoint& one, const SonarMeasurePoint& other)
     {
         return one.angle == other.angle
             && one.sampleIndex == other.sampleIndex;
@@ -23,11 +26,11 @@ namespace norbit
     struct SonarData
     {
         std::chrono::microseconds timestamp;
-        std::vector<DetectionPoint> detectionPoints;
+        std::vector<SonarMeasurePoint> measurePoints;
 
-        SonarData(const std::chrono::microseconds& timestamp, const std::vector<DetectionPoint>& detectionPoints):
+        SonarData(const std::chrono::microseconds& timestamp, const std::vector<SonarMeasurePoint>& measurePoints):
             timestamp(timestamp),
-            detectionPoints(detectionPoints) {}
+            measurePoints(measurePoints) {}
 
         SonarData() = default;
 

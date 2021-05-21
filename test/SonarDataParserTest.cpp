@@ -33,22 +33,22 @@ TEST(SensorDataParserTest, parse_sonar_data)
         std::chrono::microseconds(1553886508657940),
         sonarData.timestamp);
 
-    DetectionPoint detPoint{-1.441, 2848};
+    SonarMeasurePoint measPoint{-1.441, 2848};
 
     ASSERT_EQ(
-        detPoint,
-        sonarData.detectionPoints[0]);
+        measPoint,
+        sonarData.measurePoints[0]);
 
-    detPoint = DetectionPoint{-1.4, 2508};
-
-    ASSERT_EQ(
-        detPoint,
-        sonarData.detectionPoints[7]);
-
-    detPoint = DetectionPoint{1.444, 2743};
+    measPoint = SonarMeasurePoint{-1.4, 2508};
 
     ASSERT_EQ(
-        detPoint,
-        sonarData.detectionPoints[511]);
+        measPoint,
+        sonarData.measurePoints[7]);
+
+    measPoint = SonarMeasurePoint{1.444, 2743};
+
+    ASSERT_EQ(
+        measPoint,
+        sonarData.measurePoints[511]);
 }
 

@@ -21,8 +21,8 @@ const SonarData SensorDataParser<SonarData>::parse(const std::string& line) cons
 
     auto timestamp = std::chrono::microseconds(microsec);
 
-    std::vector<DetectionPoint> detectionPoints;
-    detectionPoints.reserve(SONAR_N_SAMPLES);
+    std::vector<SonarMeasurePoint> measurePoints;
+    measurePoints.reserve(SONAR_N_SAMPLES);
     for(int i = 1 ; i < SONAR_N_SAMPLES + 1 ; ++i)
     {
         auto tuple = splitted[i];
@@ -30,8 +30,8 @@ const SonarData SensorDataParser<SonarData>::parse(const std::string& line) cons
         auto angle = std::stof(tuple.substr(0, splitterPos));
         auto sampleIndex = std::stoi(tuple.substr(splitterPos + 1, tuple.length()));
 
-        detectionPoints.push_back(DetectionPoint {angle, sampleIndex});
+        measurePoints.push_back(SonarMeasurePoint {angle, sampleIndex});
     }
 
-    return SonarData(timestamp, detectionPoints);
+    return SonarData(timestamp, measurePoints);
 }
