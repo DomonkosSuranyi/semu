@@ -11,6 +11,8 @@
 
 namespace norbit
 {
+    using Timestamp = std::chrono::time_point<std::chrono::steady_clock>;
+
     struct SonarMeasurePoint
     {
         float angle;
