@@ -44,7 +44,7 @@ DetectionPointBatch::DetectionPointBatch(const Timestamped<SpeedOfSound>& sosBef
     currentState(State::SPEED_OF_SOUND_MISSING)
 {
     // 20Hz is the average SonarData update rate
-    slots.reserve(20);
+    slots.reserve(22);
 }
 
 BatchState DetectionPointBatch::getState() const
@@ -78,10 +78,11 @@ BatchState DetectionPointBatch::registerGNSS(const Timestamped<GNSSData>& newGNS
     {
         return currentState;
     }
+
     // The unfinished elements are at the end of the vector.
     // So iterate backwards until finding non-complete ones
     for(auto it = slots.rbegin() ;
-            it != slots.rend() || it->getState() == DetectionPointSlot::State::GNSS_MISSING ;
+            it != slots.rend() && it->getState() == DetectionPointSlot::State::GNSS_MISSING ;
             ++it) {
         it->setAfterGNSSData(newGNSS);
     }
@@ -90,13 +91,16 @@ BatchState DetectionPointBatch::registerGNSS(const Timestamped<GNSSData>& newGNS
     {
         currentState = State::COMPLETE;
     }
+    else
+    {
+        lastGNSS = newGNSS;
+    }
+
 
     return currentState;
 }
 
-BatchState DetectionPointBatch::registerSonarData(
-        const Timestamped<SonarData>& sonarData,
-        const Timestamped<GNSSData>& lastGNSS)
+BatchState DetectionPointBatch::registerSonarData(const Timestamped<SonarData>& sonarData)
 {
     if(currentState == State::SPEED_OF_SOUND_MISSING)
     {

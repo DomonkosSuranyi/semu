@@ -65,12 +65,18 @@ TEST(BATCH_TEST, finished_slot_before_speed_of_sound)
     Timestamped<GNSSData> lastGNSS;
     Timestamped<SonarData> sonarData;
 
+
     EXPECT_EQ(
             DetectionPointBatch::State::SPEED_OF_SOUND_MISSING,
-            batch.registerSonarData(sonarData, lastGNSS))
+            batch.registerGNSS(lastGNSS))
+        << "State after GNSS data before sonar data";
+
+    EXPECT_EQ(
+            DetectionPointBatch::State::SPEED_OF_SOUND_MISSING,
+            batch.registerSonarData(sonarData))
         << "State after sonarData registration";
 
-    auto slots = batch.getSlots();
+    const auto& slots = batch.getSlots();
     EXPECT_EQ(1, slots.size()) << "Slot created";
     EXPECT_EQ(
             DetectionPointSlot::State::GNSS_MISSING,
@@ -98,7 +104,8 @@ TEST(BATCH_TEST, unfinished_slot_before_speed_of_sound)
     Timestamped<GNSSData> lastGNSS;
     Timestamped<SonarData> sonarData;
 
-    batch.registerSonarData(sonarData, lastGNSS);
+    batch.registerGNSS(lastGNSS);
+    batch.registerSonarData(sonarData);
 
     EXPECT_EQ(
             DetectionPointBatch::State::GNSS_MISSING,

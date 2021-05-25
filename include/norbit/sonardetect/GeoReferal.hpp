@@ -2,32 +2,50 @@
 #define NORBIT_GEOREFERAL
 
 #include "sensor_data.hpp"
-
-#define PI 3.14159265358979323846
+#include "DetectionPointBatch.hpp"
+#include <memory>
 
 namespace norbit
 {
     /**
-     * This represents a point on a 2 dimensional plane.
-     * The plane is the detection plane of the sonar.
-     * For visual explanation see: polarpoint.png
+     * This class collects received sensor data into a structured form.
+     * TODO write here how it does the finalization
+     * TODO rename maybe
      */
-    struct PolarPoint
-    {
-        double angle, radius;
-    };
-
     class GeoReferal
     {
     public:
-        // Temporarily speedOfSound set to constant
-        GeoReferal():
-            speedOfSound(1435.0)
-        {}
+        /**
+         * Callback for incoming sonar sensor data
+         */
+        void sonarDataUpdate(const Timestamped<SonarData>& sonarData);
 
-        void sonarDataUpdate(const SonarData& newSonarData);
+        /**
+         * Callback for incoming GNSS/INS sensor data
+         */
+        void gnssUpdate(const Timestamped<GNSSData>& gnss);
+
+        /**
+         * Callback for incoming speed of sound sensor data
+         * Creates a new DetectionPointBatch
+         */
+        void speedOfSoundUpdate(const Timestamped<SpeedOfSound>& speedOfSound);
+
     private:
-        const float speedOfSound;
+        /**
+         * When a batches last slot has not been closed yet
+         * with GNSS but a SpeedOfSound occurs the evaluation
+         * of the batch cannot be started until next GNSS received
+         */
+        std::unique_ptr<DetectionPointBatch> waitForGNSSBatch;
+
+        /**
+         * The batch where the received sonar data is stored in.
+         * Changes to a new batch when SpeedOfSound occurs.
+         */
+        std::unique_ptr<DetectionPointBatch> openBatch;
+
+        void finalizeBatch(std::unique_ptr<DetectionPointBatch>&& batch);
     };
 }
 #endif

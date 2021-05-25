@@ -19,11 +19,13 @@ namespace norbit
     public:
         enum class State { COMPLETE, GNSS_MISSING };
 
-        DetectionPointSlot() = delete;
-
         DetectionPointSlot(
                 const Timestamped<SonarData>& sonarData,
                 const Timestamped<GNSSData>& gnssData);
+
+        DetectionPointSlot(DetectionPointSlot&&) = default;
+
+        DetectionPointSlot(const DetectionPointSlot&) = delete;
 
         State getState() const;
 
@@ -46,15 +48,17 @@ namespace norbit
 
         DetectionPointBatch(const Timestamped<SpeedOfSound>& sosBefore);
 
+        DetectionPointBatch(DetectionPointBatch&&) = default;
+
+        DetectionPointBatch(const DetectionPointBatch&) = delete;
+
         State getState() const;
 
         State registerSpeedOfSound(const Timestamped<SpeedOfSound>& sosAfter);
 
         State registerGNSS(const Timestamped<GNSSData>& newGNSS);
 
-        State registerSonarData(
-                const Timestamped<SonarData>& sonarData,
-                const Timestamped<GNSSData>& lastGNSS);
+        State registerSonarData(const Timestamped<SonarData>& sonarData);
 
         const std::vector<DetectionPointSlot>& getSlots() const;
 
@@ -62,6 +66,7 @@ namespace norbit
         const Timestamped<SpeedOfSound> sosBefore;
         std::optional<Timestamped<SpeedOfSound>> sosAfter;
         std::vector<DetectionPointSlot> slots;
+        Timestamped<GNSSData> lastGNSS;
         State currentState;
     };
 }
