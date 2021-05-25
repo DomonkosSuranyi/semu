@@ -18,7 +18,7 @@ namespace norbit
         /**
          * Callback for incoming sonar sensor data
          */
-        void sonarDataUpdate(const Timestamped<SonarData>& sonarData);
+        void sonarDataUpdate(Timestamped<SonarData> sonarData);
 
         /**
          * Callback for incoming GNSS/INS sensor data

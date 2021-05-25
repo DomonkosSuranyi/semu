@@ -13,6 +13,13 @@ namespace norbit
 {
     using Timestamp = std::chrono::time_point<std::chrono::steady_clock>;
 
+    template <typename T>
+    struct Timestamped
+    {
+        Timestamp timestamp;
+        T data;
+    };
+
     struct SonarMeasurePoint
     {
         float angle;
@@ -25,22 +32,19 @@ namespace norbit
             && one.sampleIndex == other.sampleIndex;
     }
 
-    struct SonarData
+    struct SonarData: public Timestamped<std::vector<SonarMeasurePoint>>
     {
-        std::chrono::microseconds timestamp;
-        std::vector<SonarMeasurePoint> measurePoints;
-
-        SonarData(const std::chrono::microseconds& timestamp, const std::vector<SonarMeasurePoint>& measurePoints):
-            timestamp(timestamp),
-            measurePoints(measurePoints) {}
+        SonarData(const Timestamp& timestamp, std::vector<SonarMeasurePoint>&& measurePoints):
+            Timestamped<std::vector<SonarMeasurePoint>>{timestamp, std::move(measurePoints)}
+        {}
 
         SonarData() = default;
 
-        SonarData(SonarData&& other) = default;
+        SonarData(SonarData&&) = default;
 
-        SonarData(const SonarData& other) = default;
+        SonarData(const SonarData&) = delete;
 
-        SonarData& operator=(SonarData&& other) = default;
+        SonarData& operator=(SonarData&&) = default;
     };
 
     using SpeedOfSound = float;

@@ -25,7 +25,7 @@ namespace norbit
             prepare();
         }
 
-        T read() const
+        const T& read() const
         {
             return actualSensorData;
         }
@@ -40,7 +40,7 @@ namespace norbit
                 actualSensorData = std::move(*nextSensorData);
                 for(const auto& listener : listeners)
                 {
-                    listener(actualSensorData);
+                    listener(std::move(actualSensorData));
                 }
                 prepare();
             }

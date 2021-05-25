@@ -45,9 +45,15 @@ int main()
     auto sonarPath = getPathFromEnv("SONAR_PATH");
     if(!sonarPath.has_value())
         return 0;
-    auto sonarCallback = [&gref](const SonarData& sonarData)
+    auto sonarCallback = [&gref](SonarData sonarData)
     {
-        gref.sonarDataUpdate(toTimestamped(sonarData));
+        gref.sonarDataUpdate(
+            Timestamped<SonarData>
+            {
+                .timestamp = std::chrono::steady_clock::now(),
+                .data = std::move(sonarData)
+            }
+        );
     };
     auto sonarSensor = new TimestampedTimingSensor<SonarData>(*sonarPath, sonarCallback);
 

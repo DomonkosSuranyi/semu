@@ -2,6 +2,8 @@
 #define NORBIT_TIMESTAMPED_TIMING_SENSOR
 
 #include "TimingSensor.hpp"
+#include <norbit/sonardetect/sensor_data.hpp>
+#include <type_traits>
 
 namespace norbit
 {

@@ -30,25 +30,25 @@ TEST(SensorDataParserTest, parse_sonar_data)
     SensorDataParser<SonarData> parser;
     auto sonarData = parser.parse(getLineFromFile("sonar_test_data.txt", 0));
     ASSERT_EQ(
-        std::chrono::microseconds(1553886508657940),
+        Timestamp(std::chrono::microseconds(1553886508657940)),
         sonarData.timestamp);
 
     SonarMeasurePoint measPoint{-1.441, 2848};
 
     ASSERT_EQ(
         measPoint,
-        sonarData.measurePoints[0]);
+        sonarData.data[0]);
 
     measPoint = SonarMeasurePoint{-1.4, 2508};
 
     ASSERT_EQ(
         measPoint,
-        sonarData.measurePoints[7]);
+        sonarData.data[7]);
 
     measPoint = SonarMeasurePoint{1.444, 2743};
 
     ASSERT_EQ(
         measPoint,
-        sonarData.measurePoints[511]);
+        sonarData.data[511]);
 }
 

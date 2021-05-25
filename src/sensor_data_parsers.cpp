@@ -19,8 +19,6 @@ SonarData SensorDataParser<SonarData>::parse(const std::string& line) const
     auto splitted = split(line);
     auto microsec = static_cast<long unsigned int>(std::stod(splitted[0]) * 1000000);
 
-    auto timestamp = std::chrono::microseconds(microsec);
-
     std::vector<SonarMeasurePoint> measurePoints;
     measurePoints.reserve(SONAR_N_SAMPLES);
     for(int i = 1 ; i < SONAR_N_SAMPLES + 1 ; ++i)
@@ -33,7 +31,7 @@ SonarData SensorDataParser<SonarData>::parse(const std::string& line) const
         measurePoints.push_back(SonarMeasurePoint {angle, sampleIndex});
     }
 
-    return SonarData(timestamp, measurePoints);
+    return SonarData(Timestamp(std::chrono::microseconds(microsec)), std::move(measurePoints));
 }
 
 // SpeedOfSound

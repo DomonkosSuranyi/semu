@@ -24,7 +24,7 @@ TEST(SLOT_TEST, update_GNSS_to_closest)
     Timestamped<GNSSData> gnssData;
     gnssData.timestamp = Timestamp(gnssInitialTimestamp);
 
-    DetectionPointSlot slot(sonarData, gnssData);
+    DetectionPointSlot slot(std::move(sonarData), gnssData);
 
     EXPECT_EQ(gnssData.timestamp, slot.getGNSSData().timestamp)
         << "Initial GNSS data";
@@ -63,8 +63,6 @@ TEST(BATCH_TEST, finished_slot_before_speed_of_sound)
 {
     DetectionPointBatch batch(Timestamped<SpeedOfSound>{});
     Timestamped<GNSSData> lastGNSS;
-    Timestamped<SonarData> sonarData;
-
 
     EXPECT_EQ(
             DetectionPointBatch::State::SPEED_OF_SOUND_MISSING,
@@ -73,7 +71,7 @@ TEST(BATCH_TEST, finished_slot_before_speed_of_sound)
 
     EXPECT_EQ(
             DetectionPointBatch::State::SPEED_OF_SOUND_MISSING,
-            batch.registerSonarData(sonarData))
+            batch.registerSonarData(Timestamped<SonarData>()))
         << "State after sonarData registration";
 
     const auto& slots = batch.getSlots();
@@ -102,10 +100,9 @@ TEST(BATCH_TEST, unfinished_slot_before_speed_of_sound)
 {
     DetectionPointBatch batch(Timestamped<SpeedOfSound>{});
     Timestamped<GNSSData> lastGNSS;
-    Timestamped<SonarData> sonarData;
 
     batch.registerGNSS(lastGNSS);
-    batch.registerSonarData(sonarData);
+    batch.registerSonarData(Timestamped<SonarData>());
 
     EXPECT_EQ(
             DetectionPointBatch::State::GNSS_MISSING,

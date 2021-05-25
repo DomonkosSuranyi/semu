@@ -5,9 +5,9 @@ using BatchState = DetectionPointBatch::State;
 
 // Slot
 DetectionPointSlot::DetectionPointSlot(
-        const Timestamped<SonarData>& sonarData,
+        Timestamped<SonarData> sonarData,
         const Timestamped<GNSSData>& gnssData):
-    sonarData(sonarData),
+    sonarData(std::move(sonarData)),
     gnssData(gnssData),
     currentState(State::GNSS_MISSING)
 {}
@@ -100,11 +100,11 @@ BatchState DetectionPointBatch::registerGNSS(const Timestamped<GNSSData>& newGNS
     return currentState;
 }
 
-BatchState DetectionPointBatch::registerSonarData(const Timestamped<SonarData>& sonarData)
+BatchState DetectionPointBatch::registerSonarData(Timestamped<SonarData> sonarData)
 {
     if(currentState == State::SPEED_OF_SOUND_MISSING)
     {
-        slots.push_back(DetectionPointSlot(sonarData, lastGNSS));
+        slots.push_back(DetectionPointSlot(std::move(sonarData), lastGNSS));
     }
 
     return currentState;

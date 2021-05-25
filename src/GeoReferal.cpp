@@ -4,11 +4,11 @@
 using namespace norbit;
 using State = DetectionPointBatch::State;
 
-void GeoReferal::sonarDataUpdate(const Timestamped<SonarData>& sonarData)
+void GeoReferal::sonarDataUpdate(Timestamped<SonarData> sonarData)
 {
     if(openBatch)
     {
-        openBatch->registerSonarData(sonarData);
+        openBatch->registerSonarData(std::move(sonarData));
     }
 }
 

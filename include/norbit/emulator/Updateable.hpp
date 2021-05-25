@@ -6,7 +6,7 @@
 
 namespace norbit
 {
-    typedef std::chrono::time_point<std::chrono::steady_clock, std::chrono::microseconds> time_point;
+    using time_point = std::chrono::time_point<std::chrono::steady_clock>;
 
     class Updateable
     {

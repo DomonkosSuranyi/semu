@@ -7,12 +7,6 @@
 
 namespace norbit
 {
-    template <typename T>
-    struct Timestamped
-    {
-        Timestamp timestamp;
-        T data;
-    };
 
     class DetectionPointSlot
     {
@@ -20,12 +14,8 @@ namespace norbit
         enum class State { COMPLETE, GNSS_MISSING };
 
         DetectionPointSlot(
-                const Timestamped<SonarData>& sonarData,
+                Timestamped<SonarData> sonarData,
                 const Timestamped<GNSSData>& gnssData);
-
-        DetectionPointSlot(DetectionPointSlot&&) = default;
-
-        DetectionPointSlot(const DetectionPointSlot&) = delete;
 
         State getState() const;
 
@@ -36,7 +26,7 @@ namespace norbit
         const Timestamped<GNSSData>& getGNSSData() const;
 
     private:
-        const Timestamped<SonarData> sonarData;
+        Timestamped<SonarData> sonarData;
         Timestamped<GNSSData> gnssData;
         State currentState;
     };
@@ -58,7 +48,7 @@ namespace norbit
 
         State registerGNSS(const Timestamped<GNSSData>& newGNSS);
 
-        State registerSonarData(const Timestamped<SonarData>& sonarData);
+        State registerSonarData(Timestamped<SonarData> sonarData);
 
         const std::vector<DetectionPointSlot>& getSlots() const;
 
