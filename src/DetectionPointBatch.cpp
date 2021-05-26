@@ -23,7 +23,9 @@ void DetectionPointSlot::setAfterGNSSData(const Timestamped<GNSSData>& afterGNSS
     auto timeToAfterGNSS = afterGNSS.timestamp - sonarData.timestamp;
 
     if(timeToAfterGNSS < timeSinceFirstGNSS)
+    {
         gnssData = afterGNSS;
+    }
 
     currentState = State::COMPLETE;
 }

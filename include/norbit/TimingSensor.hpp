@@ -48,9 +48,10 @@ namespace norbit
         }
 
     protected:
-        virtual time_point calcNextUpdateTime() const = 0;
         MockSensor<T> sensor;
         std::optional<time_point> lastUpdateTime;
+
+        virtual time_point calcNextUpdateTime() const = 0;
 
     private:
         std::optional<time_point> nextUpdateTime;

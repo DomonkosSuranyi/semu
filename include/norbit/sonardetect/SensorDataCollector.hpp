@@ -1,5 +1,5 @@
-#ifndef NORBIT_GEOREFERAL
-#define NORBIT_GEOREFERAL
+#ifndef NORBIT_SENSOR_DATA_COLLECTOR
+#define NORBIT_SENSOR_DATA_COLLECTOR
 
 #include "sensor_data.hpp"
 #include "DetectionPointBatch.hpp"
@@ -10,9 +10,8 @@ namespace norbit
     /**
      * This class collects received sensor data into a structured form.
      * TODO write here how it does the finalization
-     * TODO rename maybe
      */
-    class GeoReferal
+    class SensorDataCollector
     {
     public:
         /**

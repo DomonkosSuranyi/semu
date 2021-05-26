@@ -37,7 +37,9 @@ namespace norbit
         std::string nextLine;
 
         if(std::getline(stream, nextLine))
+        {
             return std::optional<T>(std::in_place_t(), parser.parse(nextLine));
+        }
 
 
         return std::nullopt;

@@ -25,41 +25,21 @@ namespace norbit
             prepare();
         }
 
-        const T& read() const
-        {
-            return actualSensorData;
-        }
+        const T& read() const;
 
         /**
          * Updates the actualSensorData.
          */
-        void update()
-        {
-            if(hasNext())
-            {
-                actualSensorData = std::move(*nextSensorData);
-                for(const auto& listener : listeners)
-                {
-                    listener(std::move(actualSensorData));
-                }
-                prepare();
-            }
-        }
+        void update();
 
-        bool hasNext() const
-        {
-            return nextSensorData.has_value();
-        }
+        /**
+         * Tells if there's next available sensor data
+         */
+        bool hasNext() const;
 
-        const std::optional<T>& getNextData() const
-        {
-            return nextSensorData;
-        }
+        const std::optional<T>& getNextData() const;
 
-        void registerUpdateListener(UpdateCallback callback)
-        {
-            listeners.push_back(callback);
-        }
+        void registerUpdateListener(UpdateCallback callback);
 
     protected:
         /**
@@ -73,15 +53,56 @@ namespace norbit
         /**
          *  Load next sensor data.
          */
-        void prepare()
-        {
-            nextSensorData = filereader.next();
-        }
+        void prepare();
     private:
         SensorFileReader<T> filereader;
         std::vector<UpdateCallback> listeners;
 
     };
+
+    template <typename T>
+    void MockSensor<T>::update()
+    {
+        if(hasNext())
+        {
+            actualSensorData = std::move(*nextSensorData);
+            for(const auto& listener : listeners)
+            {
+                listener(std::move(actualSensorData));
+            }
+            prepare();
+        }
+    }
+
+    template <typename T>
+    const T& MockSensor<T>::read() const
+    {
+        return actualSensorData;
+    }
+
+    template <typename T>
+    bool MockSensor<T>::hasNext() const
+    {
+        return nextSensorData.has_value();
+    }
+
+    template <typename T>
+    const std::optional<T>& MockSensor<T>::getNextData() const
+    {
+        return nextSensorData;
+    }
+
+    template <typename T>
+    void MockSensor<T>::registerUpdateListener(UpdateCallback callback)
+    {
+        listeners.push_back(callback);
+    }
+
+    template <typename T>
+    void MockSensor<T>::prepare()
+    {
+        nextSensorData = filereader.next();
+    }
 }
 
 #endif

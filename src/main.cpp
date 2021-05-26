@@ -1,7 +1,7 @@
 #include <norbit/emulator/emulator.hpp>
 #include <norbit/emulator/Updateable.hpp>
 #include <norbit/sonardetect/sensor_data_parsers.hpp>
-#include <norbit/sonardetect/GeoReferal.hpp>
+#include <norbit/sonardetect/SensorDataCollector.hpp>
 #include <norbit/TimestampedTimingSensor.hpp>
 #include <norbit/FixedRateTimingSensor.hpp>
 
@@ -11,21 +11,15 @@
 using namespace norbit;
 using namespace std::literals;
 
-std::optional<std::filesystem::path> getPathFromEnv(const char* envName)
+std::filesystem::path getPathFromEnv(const char* envName)
 {
     auto pathEnv = std::getenv(envName);
     if(pathEnv == nullptr)
     {
-        std::cerr << "Error: Missing path. Please define "
-            << envName
-            << " environment variable."
-            << std::endl;
-        return std::nullopt;
+        throw std::runtime_error(std::string(envName) + " environment variable not found");
     }
 
-    auto path = std::filesystem::path(pathEnv);
-
-    return std::optional(path);
+    return std::filesystem::path(pathEnv);
 }
 
 template <typename T>
@@ -38,16 +32,12 @@ Timestamped<T> toTimestamped(const T& data)
     };
 }
 
-int main()
+auto createSonarSensor(SensorDataCollector& collector)
 {
-    GeoReferal gref;
-
     auto sonarPath = getPathFromEnv("SONAR_PATH");
-    if(!sonarPath.has_value())
-        return 0;
-    auto sonarCallback = [&gref](SonarData sonarData)
+    auto sonarCallback = [&collector](SonarData sonarData)
     {
-        gref.sonarDataUpdate(
+        collector.sonarDataUpdate(
             Timestamped<SonarData>
             {
                 .timestamp = std::chrono::steady_clock::now(),
@@ -55,31 +45,39 @@ int main()
             }
         );
     };
-    auto sonarSensor = new TimestampedTimingSensor<SonarData>(*sonarPath, sonarCallback);
+    return std::unique_ptr<Updateable>(
+            new TimestampedTimingSensor<SonarData>(sonarPath, sonarCallback));
+}
 
+auto createSpeedOfSoundSensor(SensorDataCollector& collector)
+{
     auto speedOfSoundPath = getPathFromEnv("SPEED_OF_SOUND_PATH");
-    if(!speedOfSoundPath.has_value())
-        return 0;
-    auto speedOfSoundCallback = [&gref](const SpeedOfSound& sos)
+    auto speedOfSoundCallback = [&collector](const SpeedOfSound& sos)
     {
-        gref.speedOfSoundUpdate(toTimestamped(sos));
+        collector.speedOfSoundUpdate(toTimestamped(sos));
     };
-    auto speedOfSoundSensor = new FixedRateTimingSensor<SpeedOfSound>(*speedOfSoundPath, 1s, speedOfSoundCallback);
+    return std::unique_ptr<Updateable>(
+            new FixedRateTimingSensor<SpeedOfSound>(speedOfSoundPath, 1s, speedOfSoundCallback));
+}
 
+auto createGNSSSensor(SensorDataCollector& collector)
+{
     auto gnssPath = getPathFromEnv("GNSS_PATH");
-    if(!gnssPath.has_value())
-        return 0;
-    auto gnssCallback = [&gref](const GNSSData& gnss)
+    auto gnssCallback = [&collector](const GNSSData& gnss)
     {
-        gref.gnssUpdate(toTimestamped(gnss));
+        collector.gnssUpdate(toTimestamped(gnss));
     };
-    auto gnssSensor = new FixedRateTimingSensor<GNSSData>(*gnssPath, 20ms, gnssCallback);
+    return std::unique_ptr<Updateable>(new FixedRateTimingSensor<GNSSData>(gnssPath, 20ms, gnssCallback));
+}
+
+int main()
+{
+    SensorDataCollector collector;
 
     std::vector<std::unique_ptr<Updateable>> sensorVec;
-    sensorVec.push_back(std::unique_ptr<Updateable>(sonarSensor));
-    sensorVec.push_back(std::unique_ptr<Updateable>(speedOfSoundSensor));
-    sensorVec.push_back(std::unique_ptr<Updateable>(gnssSensor));
-
+    sensorVec.push_back(createSpeedOfSoundSensor(collector));
+    sensorVec.push_back(createGNSSSensor(collector));
+    sensorVec.push_back(createSonarSensor(collector));
 
     std::cout << "Start emulation" << std::endl;
 

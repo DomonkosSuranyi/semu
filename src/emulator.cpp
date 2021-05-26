@@ -8,14 +8,18 @@ EmulationResult norbit::emulate(
         const std::function<time_point()> nowSupplier)
 {
     if(sensors.empty())
+    {
         return EmulationResult::COULD_NOT_START;
+    }
 
     auto now = nowSupplier();
 
     for(auto& sensor : sensors)
     {
         if(sensor->isFinished())
+        {
             return EmulationResult::COULD_NOT_START;
+        }
         sensor->start(now);
     }
 
@@ -31,12 +35,16 @@ EmulationResult norbit::emulate(
 
         now = nowSupplier();
         if(*earliestUpdateSensor->getNextUpdateTime() > now)
+        {
             std::this_thread::sleep_for(*earliestUpdateSensor->getNextUpdateTime() - now);
+        }
 
 
         earliestUpdateSensor->update();
         if(earliestUpdateSensor->isFinished())
+        {
             return EmulationResult::FINISHED;
+        }
     }
 }
 

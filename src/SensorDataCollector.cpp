@@ -1,10 +1,10 @@
-#include <norbit/sonardetect/GeoReferal.hpp>
+#include <norbit/sonardetect/SensorDataCollector.hpp>
 #include <stdexcept>
 
 using namespace norbit;
 using State = DetectionPointBatch::State;
 
-void GeoReferal::sonarDataUpdate(Timestamped<SonarData> sonarData)
+void SensorDataCollector::sonarDataUpdate(Timestamped<SonarData> sonarData)
 {
     if(openBatch)
     {
@@ -12,7 +12,7 @@ void GeoReferal::sonarDataUpdate(Timestamped<SonarData> sonarData)
     }
 }
 
-void GeoReferal::gnssUpdate(const Timestamped<GNSSData>& gnss)
+void SensorDataCollector::gnssUpdate(const Timestamped<GNSSData>& gnss)
 {
     if(openBatch)
     {
@@ -29,7 +29,7 @@ void GeoReferal::gnssUpdate(const Timestamped<GNSSData>& gnss)
     }
 }
 
-void GeoReferal::speedOfSoundUpdate(const Timestamped<SpeedOfSound>& speedOfSound)
+void SensorDataCollector::speedOfSoundUpdate(const Timestamped<SpeedOfSound>& speedOfSound)
 {
     if(openBatch)
     {
@@ -59,7 +59,7 @@ void GeoReferal::speedOfSoundUpdate(const Timestamped<SpeedOfSound>& speedOfSoun
     openBatch = std::make_unique<DetectionPointBatch>(speedOfSound);
 }
 
-void GeoReferal::finalizeBatch(std::unique_ptr<DetectionPointBatch>&& batch)
+void SensorDataCollector::finalizeBatch(std::unique_ptr<DetectionPointBatch>&& batch)
 {
     // TODO evaluate and export
 }
