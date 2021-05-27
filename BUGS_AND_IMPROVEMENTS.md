@@ -9,4 +9,4 @@ This document lists the known bugs and ideas for improvements.
 * Current implementation does not allow multiple sensor update callbacks on a single sensor (YAGNI)
 * GeographicLib makes the build time very long. (Could we somehow specify what to build from that?)
 * Different timing of the sensors might lead misfunctioning (e.g. if SpeedOfSound's update rate would be under 50Hz)
-
+* Output file path is not configurable
