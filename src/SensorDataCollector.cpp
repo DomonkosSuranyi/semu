@@ -2,8 +2,6 @@
 #include <stdexcept>
 #include <thread>
 
-#include <iostream>
-
 using namespace norbit;
 using State = DetectionPointBatch::State;
 
@@ -68,7 +66,6 @@ void SensorDataCollector::speedOfSoundUpdate(const Timestamped<SpeedOfSound>& sp
 
 void SensorDataCollector::flush()
 {
-    std::cout << "flushing" << std::endl;
     if(finalizingThread.has_value() && finalizingThread->joinable())
     {
         finalizingThread->join();

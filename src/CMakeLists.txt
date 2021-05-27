@@ -9,6 +9,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(GeographicLib)
 
 file(GLOB SOURCE_FILES *.cpp)
+
+LIST(REMOVE_ITEM ${SOURCE_FILES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
 add_library(norbitlib SHARED ${SOURCE_FILES})
 target_link_libraries(norbitlib GeographicLib pthread)
 
