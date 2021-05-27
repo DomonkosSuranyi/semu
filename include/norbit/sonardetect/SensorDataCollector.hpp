@@ -5,6 +5,7 @@
 #include "DetectionPointBatch.hpp"
 #include "BatchFinalizer.hpp"
 #include <memory>
+#include <thread>
 
 namespace norbit
 {
@@ -33,6 +34,11 @@ namespace norbit
          */
         void speedOfSoundUpdate(const Timestamped<SpeedOfSound>& speedOfSound);
 
+        /**
+         * Blocks current thread until finalizing is in progress
+         */
+        void flush();
+
     private:
         /**
          * When a batches last slot has not been closed yet
@@ -48,6 +54,8 @@ namespace norbit
         std::unique_ptr<DetectionPointBatch> openBatch;
 
         BatchFinalizer finalizer;
+
+        std::optional<std::thread> finalizingThread;
 
         void finalizeBatch(std::unique_ptr<DetectionPointBatch>&& batch);
     };

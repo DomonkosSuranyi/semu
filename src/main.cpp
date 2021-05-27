@@ -92,5 +92,7 @@ int main()
         std::cout << "Emulation finished" << std::endl;
     }
 
+    collector.flush();
+
     return 0;
 }

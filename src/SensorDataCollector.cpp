@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <thread>
 
+#include <iostream>
+
 using namespace norbit;
 using State = DetectionPointBatch::State;
 
@@ -64,10 +66,25 @@ void SensorDataCollector::speedOfSoundUpdate(const Timestamped<SpeedOfSound>& sp
     openBatch = std::make_unique<DetectionPointBatch>(speedOfSound);
 }
 
+void SensorDataCollector::flush()
+{
+    std::cout << "flushing" << std::endl;
+    if(finalizingThread.has_value() && finalizingThread->joinable())
+    {
+        finalizingThread->join();
+        finalizingThread = std::nullopt;
+    }
+}
+
 void SensorDataCollector::finalizeBatch(std::unique_ptr<DetectionPointBatch>&& batch)
 {
-    std::thread([fin = &finalizer, b = std::move(batch)]() mutable
+    if(finalizingThread.has_value())
+    {
+        finalizingThread->join();
+    }
+
+    finalizingThread = std::make_optional(std::thread([fin = &finalizer, b = std::move(batch)]() mutable
     {
         fin->finalize(std::move(b));
-    }).detach();
+    }));
 }
