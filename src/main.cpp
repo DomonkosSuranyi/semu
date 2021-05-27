@@ -72,7 +72,7 @@ auto createGNSSSensor(SensorDataCollector& collector)
 
 int main()
 {
-    SensorDataCollector collector;
+    SensorDataCollector collector(std::filesystem::path("output.txt"));
 
     std::vector<std::unique_ptr<Updateable>> sensorVec;
     sensorVec.push_back(createSpeedOfSoundSensor(collector));

@@ -116,3 +116,13 @@ const std::vector<DetectionPointSlot>& DetectionPointBatch::getSlots() const
 {
     return slots;
 }
+
+Timestamped<SpeedOfSound> DetectionPointBatch::getSpeedOfSoundBefore() const
+{
+    return sosBefore;
+}
+
+Timestamped<SpeedOfSound> DetectionPointBatch::getSpeedOfSoundAfter() const
+{
+    return sosAfter.value();
+}

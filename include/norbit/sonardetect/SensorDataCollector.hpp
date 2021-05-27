@@ -3,17 +3,20 @@
 
 #include "sensor_data.hpp"
 #include "DetectionPointBatch.hpp"
+#include "BatchFinalizer.hpp"
 #include <memory>
 
 namespace norbit
 {
     /**
      * This class collects received sensor data into a structured form.
-     * TODO write here how it does the finalization
+     * When a Speed of Sound sensor data received
+     * the collected data since last Speed of Sound will be finalized.
      */
     class SensorDataCollector
     {
     public:
+        SensorDataCollector(const std::filesystem::path& outputPath);
         /**
          * Callback for incoming sonar sensor data
          */
@@ -43,6 +46,8 @@ namespace norbit
          * Changes to a new batch when SpeedOfSound occurs.
          */
         std::unique_ptr<DetectionPointBatch> openBatch;
+
+        BatchFinalizer finalizer;
 
         void finalizeBatch(std::unique_ptr<DetectionPointBatch>&& batch);
     };

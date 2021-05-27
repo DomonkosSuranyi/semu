@@ -1,8 +1,13 @@
 #include <norbit/sonardetect/SensorDataCollector.hpp>
 #include <stdexcept>
+#include <thread>
 
 using namespace norbit;
 using State = DetectionPointBatch::State;
+
+SensorDataCollector::SensorDataCollector(const std::filesystem::path& outputPath):
+    finalizer(outputPath)
+{}
 
 void SensorDataCollector::sonarDataUpdate(Timestamped<SonarData> sonarData)
 {
@@ -61,5 +66,8 @@ void SensorDataCollector::speedOfSoundUpdate(const Timestamped<SpeedOfSound>& sp
 
 void SensorDataCollector::finalizeBatch(std::unique_ptr<DetectionPointBatch>&& batch)
 {
-    // TODO evaluate and export
+    std::thread([fin = &finalizer, b = std::move(batch)]() mutable
+    {
+        fin->finalize(std::move(b));
+    }).detach();
 }

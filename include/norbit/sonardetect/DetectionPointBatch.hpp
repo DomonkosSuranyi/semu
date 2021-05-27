@@ -52,6 +52,10 @@ namespace norbit
 
         const std::vector<DetectionPointSlot>& getSlots() const;
 
+        Timestamped<SpeedOfSound> getSpeedOfSoundBefore() const;
+
+        Timestamped<SpeedOfSound> getSpeedOfSoundAfter() const;
+
     private:
         const Timestamped<SpeedOfSound> sosBefore;
         std::optional<Timestamped<SpeedOfSound>> sosAfter;
